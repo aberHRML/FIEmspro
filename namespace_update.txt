@@ -1,4 +1,0 @@
-aam.plot, fs.rgg.pval,fs.scores.plot,fs.tab,fs.tab.1,fs.scores,fs.agg,fs.sel.ad,fs.sel.re,
-fs.cor,fs.cor.vec,fs.cor.bas,fs.n,fs.auc.ad,fs.rf.ad,fs.welch.ad,fs.anova.ad,feat.rank.re,
-cor.coef,cor.coef.wrap,my.mcl,my.cl,my.mfs,my.melt,my.save.tab,my.unlist,pca.comp,pca.plot,
-preproc.sd,shrink.list,p.diff,mean.shift,panel.elli,list2df
