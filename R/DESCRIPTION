@@ -1,10 +1,10 @@
 Package: FIEmspro
-Version: 1.1-0
+Version: 2.0-0
 Date: 2007-10-16
 Title: Flow Injection Electrospray Mass Spectrometry Processing: \\
         data processing, classification modelling and variable
         selection in metabolite fingerprinting
-Depends: e1071, randomForest, MASS, ncdf, impute,
+Depends: e1071, randomForest, MASS, impute,
         KernSmooth,RColorBrewer, xtable, plotrix
 Author: Manfred Beckmann, David Enot and Wanchang Lin 
 Maintainer: Wanchang Lin <wll@aber.ac.uk>
