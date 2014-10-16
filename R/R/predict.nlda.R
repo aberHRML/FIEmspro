@@ -1,3 +1,51 @@
+#' Classify Multivariate Observations by 'nlda'
+#' 
+#' Classify multivariate observations in conjunction with \code{nlda}, and also
+#' project data onto the linear discriminants.
+#' 
+#' This function is a method for the generic function \code{predict()} for
+#' class \code{nlda}. If \code{newdata} is omitted, the results of training
+#' data in \code{nlda} object will be returned.
+#' 
+#' @usage \method{predictnlda}(object, newdata, dim2use = NULL, \dots{})
+#' @param object Object of class \code{nlda}.
+#' @param newdata A matrix or data frame of cases to be classified.
+#' @param dim2use The dimension of rotated data set to be used in prediction.
+#' @param \dots Arguments passed to or from other methods.
+#' @return A list with components: \item{class}{ The predicted class (a
+#' factor).  } \item{x}{ The projections of test data on discriminant
+#' variables.  } \item{prob}{ The posterior probabilities for the predicted
+#' classes.  } \item{xmeans}{ The group means obtained from training.  }
+#' \item{dim2use}{ The dimension of rotated data set to be used in prediction.
+#' }
+#' @author David Enot \email{dle@@aber.ac.uk} and Wanchang Lin
+#' \email{wll@@aber.ac.uk}.
+#' @seealso \code{\link{nlda}}, \code{\link{plot.nlda}}
+#' @keywords classif
+#' @examples
+#' 
+#' 
+#' data(abr1)
+#' cl   <- factor(abr1$fact$class)
+#' dat  <- abr1$pos
+#' 
+#' ## divide data as training and test data
+#' idx <- sample(1:nrow(dat), round((2/3)*nrow(dat)), replace=FALSE) 
+#' 
+#' ## constrcuct train and test data 
+#' train.dat  <- dat[idx,]
+#' train.t    <- cl[idx]
+#' test.dat   <- dat[-idx,]        
+#' test.t     <- cl[-idx] 
+#' 
+#' ## apply NLDA
+#' model    <- nlda(train.dat,train.t)
+#' pred.te  <- predict(model, test.dat)
+#' 
+#' ## confusion matrix
+#' table(test.t,pred.te$class)
+#' 
+#' 
 `predict.nlda` <-
 function(object, newdata, dim2use=NULL,...)
 {

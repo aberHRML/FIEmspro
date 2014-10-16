@@ -35,6 +35,98 @@ class (mc.obj) <- "mc.agg"
 return(mc.obj)
 }
 
+
+
+#' Aggregation of classification results
+#' 
+#' Aggregate \code{accest} objects and list of \code{accest} objects to form
+#' \code{mc.agg} object. The main utilities of this function is to concatenate
+#' in a single list various results derived from several \code{accest} calls in
+#' order to facilitate post analysis additional treatments as well as exporting
+#' the results.
+#' 
+#' The length of the resulting list is equal to the total number of
+#' \code{accest} objects (i.e one resampling experiment) plus one field that
+#' summarises each \code{accest}. The later is a table with 8 columns which are
+#' automatically generated to and also avoid confusions if the same method is
+#' applied on the same discrimination problem but with different settings,
+#' different resampling partitioning or even different data sets. Note that
+#' columns 1 to 5 are automatically generated from the output of
+#' \code{\link{accest}} where as columns 6 is based on columns 2-4. Each column
+#' is described as follows: \describe{ \item{list("Mod")}{Unique identifier for
+#' each resampling based feature rankings.}\item{:}{Unique identifier for each
+#' resampling based feature rankings.} \item{list("Alg")}{Name of the
+#' classification technique as specified in the call of
+#' \code{\link{accest}}.}\item{:}{Name of the classification technique as
+#' specified in the call of \code{\link{accest}}.} \item{list("Arg")}{Arguments
+#' passed to the classifier during the call of
+#' \code{\link{accest}}.}\item{:}{Arguments passed to the classifier during the
+#' call of \code{\link{accest}}.} \item{list("Pars")}{Summary of the resampling
+#' strategy adopted during the call of \code{\link{accest}}.}\item{:}{Summary
+#' of the resampling strategy adopted during the call of \code{\link{accest}}.}
+#' \item{list("Dis")}{Discrimination task involved. By default, this is equal
+#' to the actual levels of the class vector passed to \code{\link{accest}}
+#' separated by \code{~}.}\item{:}{Discrimination task involved. By default,
+#' this is equal to the actual levels of the class vector passed to
+#' \code{\link{accest}} separated by \code{~}.} \item{list("AlgId")}{Unique
+#' algorithm identifier based on the columns Alg, Arg and Pars so that no
+#' confusion is possible with Alg column if several classification have been
+#' performed with the same discrimination technique but with different
+#' parameters and/or resampling strategy. This column can be modified by the
+#' user.}\item{:}{Unique algorithm identifier based on the columns Alg, Arg and
+#' Pars so that no confusion is possible with Alg column if several
+#' classification have been performed with the same discrimination technique
+#' but with different parameters and/or resampling strategy. This column can be
+#' modified by the user.} \item{list("DisId")}{Unique algorithm identifier
+#' based on the columns Dis in order to simplified the name of the
+#' discrimination task if there are many classes involved and/or class level
+#' have a long name. This column can be modified by the user.}\item{:}{Unique
+#' algorithm identifier based on the columns Dis in order to simplified the
+#' name of the discrimination task if there are many classes involved and/or
+#' class level have a long name. This column can be modified by the user.}
+#' \item{list("Other")}{Empty column that can be amended to store extra
+#' information.}\item{:}{Empty column that can be amended to store extra
+#' information.} }
+#' 
+#' @aliases mc.agg mc.agg.default print.mc.agg
+#' @usage mc.agg(\dots{})
+#' 
+#' \method{mc.aggdefault}(\dots{})
+#' @param \dots accest objects and or list of accest objects
+#' @return \code{mc.agg} objects: \item{clas}{List of \code{accest} objects}
+#' \item{cldef}{Summary of each \code{accest} object - See details}
+#' @author David Enot \email{dle@@aber.ac.uk}
+#' @seealso \code{\link{accest}},\code{\link{mc.summary}},
+#' \code{\link{mc.comp.1}}, \code{\link{mc.roc}}
+#' @keywords manip
+#' @examples
+#' 
+#' data(iris)
+#' dat=as.matrix(iris[,1:4])
+#' cl=as.factor(iris[,5])
+#' lrnd=sample(1:150)[1:50]
+#' cl[lrnd]=sample(cl[lrnd])
+#' pars   <- valipars(sampling = "boot",niter = 2, nreps=10)
+#' dat1=dat.sel1(dat,cl,pwise=list(),mclass=list(),pars=pars)
+#' 
+#' res1=accest(dat1[[1]],clmeth="randomForest",ntree=100,seed=1)
+#' res2=lapply(dat1,function(x) accest(x,clmeth="lda"))
+#' 
+#' mc=mc.agg(res1,res2)
+#' ###Print the content
+#' mc
+#' 
+#' ### Classification task num. 1:
+#' mc$clas[[1]]
+#' 
+#' ## As other functions are using the column 5 and 6 to sort and print the results,
+#' ## you can replace them by something more informative
+#' ## for e.g. Alg and Dis
+#' mc$cldef[,6]<-mc$cldef[,2]
+#' mc$cldef[,7]<-c("set~vir","set~vir","set~vir","ver~vir","ver~vir")
+#' mc$cldef
+#' 
+#' 
 mc.agg<-function(...) UseMethod ("mc.agg")
 
 print.mc.agg<-function(x,...)
@@ -125,9 +217,106 @@ class(roc.l) <- "mc.roc"
 roc.l       
 }
 
+
+
+#' Generate ROC curves from several classifiers
+#' 
+#' Convenience function to generate a ROC curve from several runs and
+#' iterations for one model or a selection of models contained in a
+#' \code{mc.acc} object (see details \code{\link{mc.agg}}). This function
+#' allows the averaging of several ROC curves produced on each data
+#' partitioning of the resampling strategy (i.e cross-validation runs repeated
+#' or not several times). Three methods are available to perform the averaging:
+#' "horiz" (horizontal), "vert" (vertical) and "thres" (thresholding). (see
+#' reference for further details). The default value ("all") means that each
+#' data points from individual ROC curves are strictly concatenated into a
+#' single ROC curve.
+#' 
+#' 
+#' @aliases mc.roc mc.roc.default
+#' @usage mc.roc(mc.obj, lmod = 1, method = "all")
+#' \method{mc.rocdefault}(mc.obj, lmod = 1, method = "all")
+#' @param mc.obj \code{mc.agg} object - See details \code{\link{mc.agg}}
+#' @param lmod List of models to be considered - Default: all of them
+#' @param method Aggregation method ("all", "thres", "vert", "horiz")
+#' @return \code{roc.list} object is a list of two components: \item{roc}{List
+#' of ROC curves of length equal to the number of models. For each curve true
+#' positive (tpr), false positive rate (fpr), decision boundary threshold
+#' (thres) and type (type) of ROC aggregation are given.}
+#' \item{cldef}{Identical to \code{cldef} in \code{\link{mc.agg}}.}
+#' @author David Enot \email{dle@@aber.ac.uk}
+#' @seealso \code{\link{plot.mc.roc}},\code{\link{mc.agg}}
+#' @references Fawcett, T. (2004). ROC graphs: notes and practical
+#' considerations for researchers.  \code{Technical Report HPL-2003-4}
+#' @keywords manip
+#' @examples
+#' 
+#' data(iris)
+#' dat=as.matrix(iris[,1:4])
+#' cl=as.factor(iris[,5])
+#' lrnd=sample(1:150)[1:50]
+#' cl[lrnd]=sample(cl[lrnd])
+#' pars   <- valipars(sampling = "cv",niter = 2, nreps=10)
+#' dat1=dat.sel1(dat,cl,pwise="virginica",mclass=NULL,pars=pars)
+#' 
+#' res1=lapply(dat1,function(x) accest(x,clmeth="lda"))
+#' res2=lapply(dat1,function(x) accest(x,clmeth="randomForest",ntree=50))
+#' mc=mc.agg(res1,res2)
+#' 
+#' roc.sv=mc.roc(mc,lmod=1:4,method="thres")
+#' print(roc.sv)
+#' 
+#' 
 mc.roc <- function(mc.obj, lmod = 1, method = "all") UseMethod("mc.roc")
 
 #############
+
+
+#' Plot multiple ROC curves
+#' 
+#' Plot multiple ROC curves contained in \code{mc.roc} objects (see details in
+#' \code{\link{mc.roc}}).
+#' 
+#' 
+#' @usage \method{plotmc.roc}(x, leg = "Model", llty = NULL, lcol = NULL, xleg
+#' = 0.5, yleg = 0.4, ...)
+#' @param x \code{mc.roc} object - See details in \code{\link{mc.roc}}
+#' @param leg User defined legend or select information from \code{x$cldef}
+#' @param llty List of symbols
+#' @param lcol List of colors
+#' @param xleg Upper left corner co-ordinate on the x-axis
+#' @param yleg Upper left corner co-ordinate on the y-axis
+#' @param \dots Further arguments to be passed to lines
+#' @return NULL
+#' @author David Enot \email{dle@@aber.ac.uk}
+#' @seealso \code{\link{mc.roc}}
+#' @keywords hplot
+#' @examples
+#' 
+#' data(iris)
+#' dat=as.matrix(iris[,1:4])
+#' cl=as.factor(iris[,5])
+#' lrnd=sample(1:150)[1:50]
+#' cl[lrnd]=sample(cl[lrnd])
+#' pars   <- valipars(sampling = "cv",niter = 2, nreps=10)
+#' dat1=dat.sel1(dat,cl,pwise="virginica",mclass=NULL,pars=pars)
+#' 
+#' res1=lapply(dat1,function(x) accest(x,clmeth="lda"))
+#' res2=lapply(dat1,function(x) accest(x,clmeth="randomForest",ntree=50))
+#' mc=mc.agg(res1,res2)
+#' 
+#' roc.sv=mc.roc(mc,lmod=1:4)
+#' 
+#' ### Default plot
+#' plot(roc.sv)
+#' 
+#' ###Improve plotting by using the names contained in the "DisId" and "Alg"
+#' plot(roc.sv,leg=c("DisId","Alg"),llty=c(1,1,2,2),lcol=c("blue","red","blue","red"))
+#' 
+#' ###Improve plotting by setting the legend
+#' plot(roc.sv,leg=c("roc1","roc2","roc3","roc4"),llty=c(1,1,2,2),lcol=c("blue","red","blue","red"))
+#' 
+#' 
 plot.mc.roc<-function(x,leg="Model",llty=NULL,lcol=NULL,xleg=0.5,yleg=0.4,...){
 
 mc.roc<-x
@@ -169,6 +358,81 @@ invisible(NULL)
 }
 
 #############################
+
+
+#' Multiple Classifier Predictions Comparison
+#' 
+#' Function to test for significant differences between predictions made by
+#' various classifiers (method and/or settings) built on the same partitioning
+#' schema. This function requires that explicit class predictions for each fold
+#' and iteration are contained in the classifier object of the type of
+#' \code{\link{accest}}. For each pairwise comparison: mean of the differences,
+#' variance associated, student t-statistics and corresponding p value are
+#' reported in a table. Subsequent multiple testing correction is applied if
+#' more than two classifiers are involved. Note that column \bold{DisId} is
+#' used to sort the classifiers according to the discrimination task and
+#' \bold{DisId} and \bold{AlgId} will be used to report the results. Of course,
+#' it is also assumed that partitioning for models built with two different
+#' classifiers is identical.
+#' 
+#' 
+#' @aliases mc.comp.1 mc.comp.1.default print.mc.comp.1
+#' @usage mc.comp.1(mc.obj,lmod=NULL,p.adjust.method="holm")
+#' 
+#' \method{mc.comp.1default}(mc.obj,lmod=NULL,p.adjust.method="holm")
+#' 
+#' %\method{print}{mc.comp.1}(mc.anal,digits=3,file=NULL)
+#' @param mc.obj \code{mc.agg} object - See details \code{\link{mc.agg}}
+#' @param lmod List of models to be considered - Default: all of them
+#' @param p.adjust.method Multiple testing correction. See details in
+#' \code{\link{p.adjust}}
+#' @return \code{mc.comp.1} object: \item{res}{Summary of classifier pairwise
+#' comparisons for each discrimination task} \item{cltask}{Discrimination
+#' task(s).} \item{title}{Title for printing function.}
+#' @note See publications mentioned below.
+#' @author David Enot \email{dle@@aber.ac.uk}
+#' @seealso \code{\link{mc.agg}}
+#' @references Berrar, D., Bradbury, I. and Dubitzky, W. (2006). Avoiding model
+#' selection bias in small-sample genomic datasets. \emph{Bioinformatics}.
+#' Vol.22, No.10, 1245-125.
+#' 
+#' Bouckaert, R.R.,and Frank, E., (2004). Evaluating the Replicability of
+#' Significance Tests for Comparing Learning Algorithms.  \emph{Proc 8th
+#' Pacific-Asia Conference on Knowledge Discovery and Data Mining}. Vol.3054,
+#' 3-12
+#' @keywords htest
+#' @examples
+#' 
+#' 
+#' data(iris)
+#' x <- as.matrix(subset(iris, select = -Species))
+#' y <- iris$Species
+#' pars   <- valipars(sampling = "cv",niter = 10, nreps=5, strat=TRUE)
+#' tr.idx <- trainind(y,pars=pars)
+#' ## RF model based one tree
+#' acc1   <- accest(x, y, clmeth ="randomForest", pars = pars, tr.idx=tr.idx,ntree=1)
+#' ## RF model based 100 trees
+#' acc2   <- accest(x, y, clmeth = "randomForest", pars = pars, tr.idx=tr.idx,ntree=100)
+#' ### RF model where the minimum size of terminal nodes is set to a value greater 
+#' ## than the maximum number of samples per class (oups!)
+#' acc3   <- accest(x,y, clmeth = "randomForest", pars = pars, tr.idx=tr.idx,ntree=1,nodesize=80)
+#' 
+#' clas=mc.agg(acc1,acc2,acc3)
+#' res.comp<-mc.comp.1(clas,p.adjust.method="holm")
+#' 
+#' ## No significant differences between 1 and 2
+#' ## Of course classifiers 1 and 2 performs significantly better than 3
+#' ## by default
+#' res.comp
+#' 
+#' ## with a few more decimals...
+#' print(res.comp,digits=4)
+#' 
+#' ## Print results in a file
+#' \dontrun{print(res.comp,digits=2,file="tmp.csv")}
+#' 
+#' 
+#' 
 mc.comp.1 <- function(mc.obj,lmod=NULL,p.adjust.method="holm") UseMethod("mc.comp.1")
 mc.comp.1.default<-function(mc.obj,lmod=NULL,p.adjust.method="holm"){
 
@@ -297,6 +561,62 @@ else
 
 
 ############################
+
+
+#' Summary of multiple classifiers objects
+#' 
+#' Convenience function to output statistics related to accuracy, AUC and
+#' margins for a selection of models. If \code{sortDis=TRUE}, results are
+#' grouped by discrimination task (value contained in DisId column of
+#' \code{mc.obj$cldef}). If \code{sortDis=FALSE}, results are grouped by
+#' classifier algorithm (value contained in column AlgId of
+#' \code{mc.obj$cldef}).
+#' 
+#' 
+#' @aliases mc.summary mc.summary.default print.mc.summary
+#' @usage mc.summary(mc.obj,lmod=NULL,sortDis=TRUE)
+#' 
+#' \method{mc.summarydefault}(mc.obj, lmod = NULL, sortDis = TRUE)
+#' 
+#' %\method{print}{mc.summary}(mc.anal,digits=3,file=NULL)
+#' @param mc.obj \code{mc.agg} object
+#' @param lmod List of models to be considered - Default: all of them
+#' @param sortDis Should the results be sorted by discrimination task? If
+#' FALSE, results are group by classifier techniques
+#' @return \code{mc.summary} object: \item{res}{List of results}
+#' \item{cltask}{Discrimination task(s) or classification algorithm(s) used.}
+#' \item{title}{Title for printing function.}
+#' @author David Enot \email{dle@@aber.ac.uk}
+#' @seealso \code{\link{mc.agg}}
+#' @keywords manip
+#' @examples
+#' 
+#' data(iris)
+#' dat=as.matrix(iris[,1:4])
+#' cl=as.factor(iris[,5])
+#' lrnd=sample(1:150)[1:50]
+#' cl[lrnd]=sample(cl[lrnd])
+#' pars   <- valipars(sampling = "cv",niter = 2, nreps=10)
+#' dat1=dat.sel1(dat,cl,pwise="virginica",mclass=NULL,pars=pars)
+#' 
+#' res1=lapply(dat1,function(x) accest(x,clmeth="lda"))
+#' res2=lapply(dat1,function(x) accest(x,clmeth="randomForest",ntree=50))
+#' 
+#' ## Aggregate res1 and res2
+#' mc=mc.agg(res1,res2)
+#' 
+#' ## Sort results by discrimination task
+#' mc.summary(mc)
+#' 
+#' ## Sort results by algorithm
+#' mc.summary(mc,sortDis=FALSE)
+#' 
+#' ## See what is in
+#' names(mc.summary(mc))
+#' 
+#' ## Print results in a file
+#' \dontrun{print(mc.summary(mc,sortDis=FALSE),digits=2,file="tmp.csv")}
+#' 
 mc.summary <- function(mc.obj,lmod=NULL,sortDis=TRUE) UseMethod("mc.summary")
 mc.summary.default<-function(mc.obj,lmod=NULL,sortDis=TRUE){
 
@@ -366,6 +686,49 @@ ret
 }
 
 ######################################################
+
+
+#' Summary of a predictor in mc.agg object
+#' 
+#' Convenience function to output statistics related to accuracy, AUC or
+#' margins at each iteration for one model or a selection of models contained
+#' in a \code{mc.agg} object (see details \code{\link{mc.agg}}).
+#' 
+#' 
+#' @usage mc.meas.iter(mc.obj, lmod = NULL,type="acc",nam="Model")
+#' @param mc.obj \code{mc.agg} object - See details \code{\link{mc.agg}}
+#' @param lmod List of models to be considered - Default: all models
+#' @param type Predictor type - Can be either acc (accuracy), auc (AUC), mar
+#' (margin or equivalent)
+#' @param nam List of names to be used in the result - Names given here
+#' corresponds to the column name of \code{mc.obj$cldef}
+#' @return Data frame containing statistic of interest at each iteration.
+#' @author David Enot \email{dle@@aber.ac.uk}
+#' @seealso \code{\link{mc.agg}}
+#' @keywords manip
+#' @examples
+#' 
+#' data(iris)
+#' dat=as.matrix(iris[,1:4])
+#' cl=as.factor(iris[,5])
+#' lrnd=sample(1:150)[1:50]
+#' cl[lrnd]=sample(cl[lrnd])  ## add a bit of misclassification for fun
+#' pars   <- valipars(sampling = "cv",niter = 10, nreps=4)
+#' dat1=dat.sel1(dat,cl,pwise="virginica",mclass=NULL,pars=pars)
+#' 
+#' res1=lapply(dat1,function(x) accest(x,clmeth="lda"))
+#' res2=lapply(dat1,function(x) accest(x,clmeth="randomForest",ntree=50))
+#' 
+#' ## Aggregate res1 and res2
+#' mc=mc.agg(res1,res2)
+#' 
+#' ## AUC in each model
+#' auc.iter<-mc.meas.iter(mc,type="auc",nam=c("DisId","Alg"))
+#' ## Plot them
+#' boxplot(auc.iter)
+#' ## Print on the screen
+#' print(auc.iter)
+#' 
 mc.meas.iter<-function(mc.obj,lmod=NULL,type="acc",nam="Model"){
 
 if(!inherits(mc.obj, "mc.agg"))
