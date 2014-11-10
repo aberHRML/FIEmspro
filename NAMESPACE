@@ -1,0 +1,59 @@
+## useDynLib(FIEmspro)
+
+### exported functions
+export(
+nlda,grpplot,preproc,fiems_ltq_main,fiems_lct_main,
+koptimp, multibc, onebc, ticstats, outl.det,feat.rank.re,
+fs.mrpval, valipars,trainind, fs.auc, fs.snr,fs.rf, fs.welch, 
+fs.anova,fs.mi,fs.kruskal,hca.nlda,fs.summary, fs.relief, fs.bw, dat.sel,
+accest, trainind.cv, parse_vec, parse_freq, dat.sel1, mc.roc, mc.summary,mc.comp.1,
+ mc.agg, mc.meas.iter, ftrank.agg, tidy.ftrank, summ.ftrank
+)
+
+### register S3 methods
+S3method(nlda, default)
+S3method(nlda, formula)
+S3method(predict, nlda)         
+S3method(summary, nlda)
+
+S3method(mc.agg,default)
+S3method(print,mc.agg)
+
+
+S3method(accest, default)
+S3method(accest, formula)
+S3method(accest, dlist)
+S3method(summary, accest)
+
+S3method(mc.roc, default)
+S3method(plot, mc.roc)
+
+S3method(feat.rank.re,default)
+S3method(feat.rank.re,formula)
+S3method(feat.rank.re,dlist)
+S3method(print,feat.rank.re)
+
+S3method(plot, accest)
+S3method(plot, nlda)
+
+S3method(print, accest)
+S3method(print, nlda)
+S3method(print, summary.accest)
+S3method(print, summary.nlda)
+
+S3method(mc.comp.1, default)
+S3method(print, mc.comp.1)
+S3method(mc.summary, default)
+S3method(print, mc.summary)
+
+
+## imported functions
+
+import(graphics)
+import(stats)
+import(e1071)
+
+## import(ncdf) ## no namespace
+## import(MASS)
+## import(impute)
+## import(randomForest)
