@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wilsontom/FIEmspro2.0.png?branch=master)](https://travis-ci.org/wilsontom/FIEmspro2.0)
+
 ## FIEmspro2.0
 
 ### Updated version of FIEmspro (http://users.aber.ac.uk/jhd/)
