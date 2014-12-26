@@ -10,3 +10,4 @@ Full details of Version 2.0 updates and new features can be found in `FIEmspro2.
 
 A project page (_under construction_) can be found at http://wilsontom.github.io/FIEmspro2.0
 
+`FIEmspro2.0 Release Notes`
