@@ -7,7 +7,7 @@ koptimp, multibc, onebc, ticstats, outl.det,feat.rank.re,
 fs.mrpval, valipars,trainind, fs.auc, fs.snr,fs.rf, fs.welch, 
 fs.anova,fs.mi,fs.kruskal,hca.nlda,fs.summary, fs.relief, fs.bw, dat.sel,
 accest, trainind.cv, parse_vec, parse_freq, dat.sel1, mc.roc, mc.summary,mc.comp.1,
- mc.agg, mc.meas.iter, ftrank.agg, tidy.ftrank, summ.ftrank
+ mc.agg, mc.meas.iter, ftrank.agg, tidy.ftrank, summ.ftrank,panel.elli,pca.comp, mean.shift
 )
 
 ### register S3 methods
