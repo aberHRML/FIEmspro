@@ -1,12 +1,11 @@
 Package: FIEmspro
-Version: 2.0-0
+Version: 1.2-0
 Date: 2007-10-16
-Title: Flow Injection Electrospray Mass Spectrometry Processing: \\
+Title: Flow In-jection Electrospray Mass Spectrometry Processing: \\
         data processing, classification modelling and variable
         selection in metabolite fingerprinting
 Depends: e1071, randomForest, MASS,
-        KernSmooth,RColorBrewer, xtable, plotrix
-Suggests: Rcpp, ggplot2, plyr, reshape2,mzR, impute
+        KernSmooth,RColorBrewer, xtable, plotrix, impute, mzR
 Author: Manfred Beckmann, David Enot and Wanchang Lin 
 Maintainer: Wanchang Lin <wll@aber.ac.uk>
 Description: Functions of data processing for metabolomics.
