@@ -4,7 +4,7 @@ bioc_required: true
 warnings_are_errors: false
 
 apt_packages:
- - libnetcef-dev
+ - libnetcdf-dev
  - udunits-bin
  - libudunits2-dev
  
