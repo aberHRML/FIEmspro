@@ -3,6 +3,9 @@ sudo: required
 bioc_required: true
 warnings_are_errors: false
 
+apt_packages:
+ - netcdf
+ 
 r_binary_packages:
  - e1071
  - randomForest
