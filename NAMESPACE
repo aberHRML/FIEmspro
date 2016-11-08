@@ -52,8 +52,8 @@ S3method(print, mc.summary)
 import(graphics)
 import(stats)
 import(e1071)
+import(randomForest)
 
 ## import(ncdf) ## no namespace
 ## import(MASS)
 ## import(impute)
-## import(randomForest)
