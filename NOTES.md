@@ -2,7 +2,7 @@
 
 __The following are the details of `R CMD check` (2017-06-26)__
 
-__As `FIEmspro` is no longer actively developed; these NOTES are simply for reference. __
+__As `FIEmspro` is no longer actively developed; these NOTES are simply for reference.__
 
 ```R
 R CMD check FIEmspro_1.2-0.tar.gz
