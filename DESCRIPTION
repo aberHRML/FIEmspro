@@ -6,6 +6,7 @@ Title: Flow In-jection Electrospray Mass Spectrometry Processing: \\
         selection in metabolite fingerprinting
 Depends: e1071, randomForest, MASS,
         KernSmooth,RColorBrewer, xtable, plotrix, impute
+Imports: ncdf4
 Author: Manfred Beckmann, David Enot and Wanchang Lin 
 Maintainer: Jasen Finch <jsf9@aber.ac.uk>, Tom Wilson <tpw2@aber.ac.uk>
 Description: Functions of data processing for metabolomics.

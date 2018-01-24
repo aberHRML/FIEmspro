@@ -5,14 +5,14 @@ function(inn,scrng,limit)
   rngende=scrng[2]
   subrngbegi=scrng[3]
   subrngende=scrng[4]
-  nc=open.ncdf( inn, write=FALSE, readunlim=TRUE, verbose=FALSE)
+  nc=nc_open( inn, write=FALSE, readunlim=TRUE, verbose=FALSE)
   
   ## get list of names, dimension of data and the data itself
   namesx=matrix(0,length(nc$var),1)
   datdim=matrix(0,length(nc$var),1)
   for (i in 1:length(nc$var)) {
     vx <- nc$var[[i]]
-    dx <- get.var.ncdf( nc, vx )
+    dx <- ncvar_get( nc, vx )
     namesx[i]=vx$name
     datdim[i]=dim(dx)
     if (i==14) Scindex=dx
@@ -55,6 +55,6 @@ function(inn,scrng,limit)
   itp <- mytmat(matmozsc,matintsc,rngbegi,rngende,subrngbegi,subrngende,limit)
 
   return(list(ph=itp))
-  close.ncdf(nc)
+  nc_close(nc)
 }
 

@@ -54,6 +54,6 @@ import(stats)
 import(e1071)
 import(randomForest)
 
-## import(ncdf) ## no namespace
+import(ncdf4)
 ## import(MASS)
 ## import(impute)

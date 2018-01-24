@@ -6,3 +6,11 @@
 
 ### Original project page at http://users.aber.ac.uk/jhd
 
+
+### Installation
+
+Using devtools:
+
+```R
+devtools::install_github('aberHRML/FIEmspro')
+```
