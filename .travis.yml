@@ -8,6 +8,10 @@ apt_packages:
  - udunits-bin
  - libudunits2-dev
  
+r: 
+ - release
+ - devel
+ 
 r_binary_packages:
  - ncdf4
  - e1071
