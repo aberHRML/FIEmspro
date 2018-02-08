@@ -8,7 +8,12 @@ apt_packages:
  - udunits-bin
  - libudunits2-dev
  
+r: 
+ - release
+ 
 r_binary_packages:
+ - devtools
+ - ncdf4
  - e1071
  - randomForest
  - MASS
@@ -19,4 +24,4 @@ r_binary_packages:
  
 bioc_packages:
  - impute
- - mzR
+
